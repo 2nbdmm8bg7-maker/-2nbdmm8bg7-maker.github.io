@@ -1,0 +1,24 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Optimizer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f2f2f7;color:#111}
+main{max-width:520px;margin:auto;padding:28px 18px}.card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 4px 20px #0001}
+h1{margin:0 0 6px;font-size:30px}.sub,.note{color:#666}.sub{margin-bottom:20px}
+label{display:block;font-weight:600;margin:15px 0 7px}input{width:100%;font-size:20px;padding:14px;border:1px solid #ccc;border-radius:13px}
+button{width:100%;margin-top:22px;padding:16px;border:0;border-radius:14px;font-size:20px;font-weight:700;background:#111;color:#fff}
+.result{margin-top:22px;padding:18px;border-radius:15px;background:#f2f2f7}.result b{font-size:27px}.formula{font-size:13px;color:#666;margin-top:8px}.note{font-size:13px;margin-top:18px;line-height:1.45}
+</style></head><body><main><div class="card">
+<h1>Optimizer</h1><div class="sub">HP × 1,000 ÷ DMG × Base</div>
+<label>HP</label><input id="hp" placeholder="1.72 BW" inputmode="decimal">
+<label>DMG</label><input id="dmg" placeholder="134.29 BV" inputmode="decimal">
+<label>Base</label><input id="base" placeholder="13.06 AC" inputmode="decimal">
+<button onclick="calculate()">Calculate</button><div id="result" class="result" hidden></div>
+<div class="note">AA → AB → … → AZ → BA → … → BZ → CA → CB → …<br>Every suffix step = ×1,000.</div>
+</div></main>
+<script>
+function parseValue(t){let m=t.trim().replace(/,/g,'').match(/^([0-9]*\.?[0-9]+)\s*([A-Za-z]{2})?$/);if(!m)throw Error('Use a number and suffix, e.g. 1.72 BW.');let n=+m[1],s=(m[2]||'').toUpperCase(),i=0;if(s){i=(s.charCodeAt(0)-65)*26+s.charCodeAt(1)-65}return{n,s,value:n*1000**i}}
+function fmt(n,s){let i=(s.charCodeAt(0)-65)*26+s.charCodeAt(1)-65;return(n/1000**i).toLocaleString('en-US',{maximumFractionDigits:2})+' '+s}
+function calculate(){let o=document.getElementById('result');try{let h=parseValue(hp.value),d=parseValue(dmg.value),b=parseValue(base.value);if(!d.value)throw Error('DMG cannot be zero.');let r=h.value*1000/d.value*b.value;o.hidden=false;o.innerHTML='<b>'+fmt(r,b.s||'AA')+'</b><div class="formula">(HP × 1,000 ÷ DMG) × Base</div>'}catch(e){o.hidden=false;o.innerHTML='<b style="font-size:18px">❌ '+e.message+'</b>'}}
+</script></body></html>
